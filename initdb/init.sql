@@ -16,16 +16,109 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `file`
+-- Table structure for table `admin_lists`
 --
 
 CREATE DATABASE networth;
 USE networth
 
-DROP TABLE IF EXISTS `file`;
+DROP TABLE IF EXISTS `admin_lists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `file` (
+CREATE TABLE `admin_lists` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `chat_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `chat_id` (`chat_id`),
+  CONSTRAINT `admin_lists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `admin_lists_ibfk_2` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin_lists`
+--
+
+LOCK TABLES `admin_lists` WRITE;
+/*!40000 ALTER TABLE `admin_lists` DISABLE KEYS */;
+/*!40000 ALTER TABLE `admin_lists` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `chats`
+--
+
+DROP TABLE IF EXISTS `chats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `chats` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `admin_list` int(11) NOT NULL,
+  `subscriber_list` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `owner_id` (`user_id`),
+  KEY `admin_list` (`admin_list`),
+  KEY `subscriber_list` (`subscriber_list`),
+  CONSTRAINT `chats_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `chats_ibfk_2` FOREIGN KEY (`admin_list`) REFERENCES `admin_lists` (`id`),
+  CONSTRAINT `chats_ibfk_3` FOREIGN KEY (`subscriber_list`) REFERENCES `subscriber_lists` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chats`
+--
+
+LOCK TABLES `chats` WRITE;
+/*!40000 ALTER TABLE `chats` DISABLE KEYS */;
+/*!40000 ALTER TABLE `chats` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `comments`
+--
+
+DROP TABLE IF EXISTS `comments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL,
+  `message_id` int(11) NOT NULL,
+  `likes` int(11) NOT NULL,
+  `dislikes` int(11) NOT NULL,
+  `replies` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `message_id` (`message_id`),
+  KEY `post_id` (`post_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `messages` (`id`),
+  CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
+  CONSTRAINT `comments_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `comments`
+--
+
+LOCK TABLES `comments` WRITE;
+/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `files`
+--
+
+DROP TABLE IF EXISTS `files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `author_id` int(11) NOT NULL,
   `visibility` tinyint(1) NOT NULL,
@@ -33,27 +126,27 @@ CREATE TABLE `file` (
   `file_url` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `author_id` (`author_id`),
-  CONSTRAINT `file_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `files_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `file`
+-- Dumping data for table `files`
 --
 
-LOCK TABLES `file` WRITE;
-/*!40000 ALTER TABLE `file` DISABLE KEYS */;
-/*!40000 ALTER TABLE `file` ENABLE KEYS */;
+LOCK TABLES `files` WRITE;
+/*!40000 ALTER TABLE `files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `files` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `friend`
+-- Table structure for table `friend_lists`
 --
 
-DROP TABLE IF EXISTS `friend`;
+DROP TABLE IF EXISTS `friend_lists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `friend` (
+CREATE TABLE `friend_lists` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `friend_id` int(11) NOT NULL,
@@ -61,57 +154,193 @@ CREATE TABLE `friend` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `friend_id` (`friend_id`),
-  CONSTRAINT `friend_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `friend_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `friend_lists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `friend_lists_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `friend`
+-- Dumping data for table `friend_lists`
 --
 
-LOCK TABLES `friend` WRITE;
-/*!40000 ALTER TABLE `friend` DISABLE KEYS */;
-/*!40000 ALTER TABLE `friend` ENABLE KEYS */;
+LOCK TABLES `friend_lists` WRITE;
+/*!40000 ALTER TABLE `friend_lists` DISABLE KEYS */;
+/*!40000 ALTER TABLE `friend_lists` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `post`
+-- Table structure for table `messages`
 --
 
-DROP TABLE IF EXISTS `post`;
+DROP TABLE IF EXISTS `messages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `post` (
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `chat_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `chat_id` (`chat_id`),
+  CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `messages`
+--
+
+LOCK TABLES `messages` WRITE;
+/*!40000 ALTER TABLE `messages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `post_tags`
+--
+
+DROP TABLE IF EXISTS `post_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `post_tags` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `post_id` (`post_id`),
+  KEY `tag_id` (`tag_id`),
+  CONSTRAINT `post_tags_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
+  CONSTRAINT `post_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `post_tags`
+--
+
+LOCK TABLES `post_tags` WRITE;
+/*!40000 ALTER TABLE `post_tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `post_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `posts`
+--
+
+DROP TABLE IF EXISTS `posts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
   `text` varchar(255) NOT NULL,
   `author_id` int(11) NOT NULL,
   `likes` mediumint(9) NOT NULL,
   `dislikes` mediumint(9) NOT NULL,
+  `tags` int(11) DEFAULT NULL,
+  `comments` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `author_id` (`author_id`),
-  CONSTRAINT `post_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`)
+  KEY `tags` (`tags`),
+  CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`tags`) REFERENCES `post_tags` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `post`
+-- Dumping data for table `posts`
 --
 
-LOCK TABLES `post` WRITE;
-/*!40000 ALTER TABLE `post` DISABLE KEYS */;
-/*!40000 ALTER TABLE `post` ENABLE KEYS */;
+LOCK TABLES `posts` WRITE;
+/*!40000 ALTER TABLE `posts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `user`
+-- Table structure for table `settings`
 --
 
-DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `theme` tinytext NOT NULL DEFAULT 'dark',
+  `language` tinytext NOT NULL DEFAULT 'eu',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `settings`
+--
+
+LOCK TABLES `settings` WRITE;
+/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `subscriber_lists`
+--
+
+DROP TABLE IF EXISTS `subscriber_lists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `subscriber_lists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `chat_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `chat_id` (`chat_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `subscriber_lists_ibfk_1` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`),
+  CONSTRAINT `subscriber_lists_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `subscriber_lists`
+--
+
+LOCK TABLES `subscriber_lists` WRITE;
+/*!40000 ALTER TABLE `subscriber_lists` DISABLE KEYS */;
+/*!40000 ALTER TABLE `subscriber_lists` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tags`
+--
+
+DROP TABLE IF EXISTS `tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tags` (
+  `id` int(11) NOT NULL,
+  `tag_name` tinytext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tags`
+--
+
+LOCK TABLES `tags` WRITE;
+/*!40000 ALTER TABLE `tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `surname` varchar(255) DEFAULT NULL,
@@ -129,12 +358,12 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user`
+-- Dumping data for table `users`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES
 (52,'ZXC','Baron','$2b$04$d85sxjrY33SEQXwq0tyYf.TzGxxbLStR0abS4nhWNWzqwhfNWQkS2','alwx202@mail.ru',NULL,'00143f5a-d799-4573-bf31-857c1f95b33a','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsd3gyMDJAbWFpbC5ydSIsIm5hbWUiOiJaWEMiLCJzdXJuYW1lIjoiQmFyb24iLCJpZCI6NTIsImlzQWN0aXZhdGVkIjowLCJpYXQiOjE3MTQ4MzIyOTUsImV4cCI6MTcxNzQyNDI5NX0.E1YZaJbZxZTptIokJQlQcBfMz4b0CMW30iZYRmUMCmQ',0,'default.png',NULL,'public'),
 (53,'ZXC','ZXC','$2b$04$Z.WyrAQ1/i6zDwEqbgZupuOk.WbpwhyMSZMjETeYHYCg/tQBHPMXy','alwx218@maul.ru',NULL,'885540a2-ce57-4880-a1d0-1f15eb86a9ab',NULL,0,'default.png',NULL,'public'),
 (54,'ZXC','ZXC','$2b$04$yaTw8of0RWeys/MGWg1yWuD5BWOzNLHp54NlQ2qzqnCMtrhzBGfsy','alwx2021@maul.ru',NULL,'495ccb71-c73c-45b0-a715-7f792c796dc7',NULL,0,'default.png',NULL,'public'),
@@ -168,7 +397,7 @@ INSERT INTO `user` VALUES
 (124,'fasefefs','sdfasdfsdfsfdsfsdf','$2b$04$dL/sosLU6Z1PghlIYSSX1eSVVI5dZAwRNycK96SHVwZm7vfILXHGa','asrorovirbis4@gmail.com',NULL,'bb49be1f-aa6a-455c-8bf2-998206b49e51','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzcm9yb3ZpcmJpczRAZ21haWwuY29tIiwibmFtZSI6ImZhc2VmZWZzIiwic3VybmFtZSI6InNkZmFzZGZzZGZzZmRzZnNkZiIsImlkIjoxMjQsImlzQWN0aXZhdGVkIjowLCJhdmF0YXIiOm51bGwsImNvZGUiOm51bGwsImlhdCI6MTcyMTE5MTE0MywiZXhwIjoxNzIzNzgzMTQzfQ.giKM_Eh5DaYoQwnjgPQ_5-cIkQM9ha2fyZKyVMRNlJA',0,'b2e8dba7-e88c-4dda-92de-43fed1c62025.jpg',NULL,'public'),
 (125,'fsdfsd','sdfsdf','$2b$04$Rw/FhUcfd40E4NpO86NpXO0wmKdKtuFdX9QhDAIas1yj4BNkGYYDi','midlle@gmail.com',NULL,'cd3d696d-5b29-47ec-a7a2-7fa7af803aea','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pZGxsZUBnbWFpbC5jb20iLCJuYW1lIjoiZnNkZnNkIiwic3VybmFtZSI6InNkZnNkZiIsImlkIjoxMjUsImlzQWN0aXZhdGVkIjowLCJhdmF0YXIiOiJodHRwczovL25ldHdvcnRoLnNob2Rvbi5ydS9hcGkvZmlsZS9hdmF0YXIvZGVmYXVsdC5wbmciLCJjb2RlIjpudWxsLCJpYXQiOjE3MjEyNjg0MzAsImV4cCI6MTcyMzg2MDQzMH0.Y-cnObSeGihAozHp08cmq_K9qrXto9JWsnOPVB-FD98',0,'default.png',NULL,'public'),
 (126,'sdfsdf','sdfdsfsf','$2b$04$Xis2AAyqaw1lVFZwMlRpW..tx312tbiZWqfpijMV0G7v63I.vmyMC','sfsdf@gmail.com',NULL,'d343569c-036c-4e46-8107-f6f6b99f1387','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNmc2RmQGdtYWlsLmNvbSIsIm5hbWUiOiJzZGZzZGYiLCJzdXJuYW1lIjoic2RmZHNmc2YiLCJpZCI6MTI2LCJpc0FjdGl2YXRlZCI6MCwiYXZhdGFyIjoiaHR0cHM6Ly9uZXR3b3J0aC5zaG9kb24ucnUvYXBpL2ZpbGUvYXZhdGFyL2RlZmF1bHQucG5nIiwiY29kZSI6bnVsbCwiaWF0IjoxNzIxMjczMTA4LCJleHAiOjE3MjM4NjUxMDh9._o9YpUCu5EosOgvCwv_uCiCHSK_0WAsP1V_vAYfF9-U',0,'default.png',NULL,'public');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -180,4 +409,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-23 14:17:21
+-- Dump completed on 2024-07-30 10:31:16
