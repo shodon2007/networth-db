@@ -140,13 +140,13 @@ LOCK TABLES `files` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `friend_lists`
+-- Table structure for table `friends`
 --
 
-DROP TABLE IF EXISTS `friend_lists`;
+DROP TABLE IF EXISTS `friends`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `friend_lists` (
+CREATE TABLE `friends` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `friend_id` int(11) NOT NULL,
@@ -154,18 +154,18 @@ CREATE TABLE `friend_lists` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `friend_id` (`friend_id`),
-  CONSTRAINT `friend_lists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `friend_lists_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`id`)
+  CONSTRAINT `friends_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `friends_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `friend_lists`
+-- Dumping data for table `friends`
 --
 
-LOCK TABLES `friend_lists` WRITE;
-/*!40000 ALTER TABLE `friend_lists` DISABLE KEYS */;
-/*!40000 ALTER TABLE `friend_lists` ENABLE KEYS */;
+LOCK TABLES `friends` WRITE;
+/*!40000 ALTER TABLE `friends` DISABLE KEYS */;
+/*!40000 ALTER TABLE `friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
